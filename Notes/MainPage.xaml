@@ -1,0 +1,180 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:Maui.ColorPicker;assembly=Maui.ColorPicker"
+             xmlns:skia="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
+             x:Class="Notes.MainPage"
+             BackgroundColor="#F5F5F5">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="und" Clicked="Undo" IconImageSource="undo.png"/>
+        <ToolbarItem Text="red" Clicked="Redo" IconImageSource="redo.png"/>
+        <ToolbarItem Text="mov" Clicked="Move" IconImageSource="move.png"/>
+        <ToolbarItem Text="Tools" IconImageSource="brush_black.png" Clicked="OnToolsClicked"/>
+        <ToolbarItem Text="Color" IconImageSource="palette_brown.png" Clicked="OnPaintClicked"/>
+        <ToolbarItem Text="Text" IconImageSource="text_files.png" Clicked="ToolbarItem_Clicked"/>
+        <ToolbarItem Text="More" IconImageSource="more.png"/>
+        
+    </ContentPage.ToolbarItems>
+
+    <AbsoluteLayout>
+        <!-- Siatka jako tło -->
+        <ScrollView
+    x:Name="ScrollContainer"
+    Orientation="Both"
+    AbsoluteLayout.LayoutFlags="All"
+    AbsoluteLayout.LayoutBounds="0,0,1,1"
+            Scrolled="OnScrolled">
+            <Grid
+        x:Name="DrawingGrid"
+        BackgroundColor="Transparent"
+                HeightRequest="2000"
+                WidthRequest="2000">
+                <Grid.GestureRecognizers>
+                    <PanGestureRecognizer
+                TouchPoints="2"/>
+                </Grid.GestureRecognizers>
+            </Grid>
+        </ScrollView>
+        <skia:SKCanvasView
+            x:Name="CanvasView"
+            AbsoluteLayout.LayoutFlags="All"
+            AbsoluteLayout.LayoutBounds="0,0,1,1"
+            PaintSurface="OnPaintSurface"
+            EnableTouchEvents="True"
+            Touch="OnCanvasTouch"
+            BackgroundColor="Transparent"/>
+
+        <Frame x:Name="ToolsFrame"
+       IsVisible="False"
+       AbsoluteLayout.LayoutFlags="All"
+       AbsoluteLayout.LayoutBounds="0,0,0.45,0.5"
+       BackgroundColor="White"
+       CornerRadius="15"
+       HasShadow="True"
+       Padding="10">
+            <ScrollView>
+                <StackLayout>
+                    <Label 
+                Text="Wybierz narzędzie:" 
+                FontSize="18" 
+                TextColor="#333333" 
+                FontAttributes="Bold" 
+                HorizontalOptions="Center" />
+                    <RadioButton Content="Pencil" GroupName="Tools" TextColor="#4A4A4A" />
+                    <RadioButton Content="Marker" GroupName="Tools" TextColor="#4A4A4A" />
+                    <RadioButton Content="Pen" GroupName="Tools" TextColor="#4A4A4A" />
+                    <RadioButton Content="Brush" GroupName="Tools" TextColor="#4A4A4A" />
+                    <RadioButton Content="Shapes" GroupName="Tools" TextColor="#4A4A4A" />
+                    <RadioButton Content="Gifs" GroupName="Tools" TextColor="#4A4A4A" />
+                    <RadioButton Content="Sticks" GroupName="Tools" TextColor="#4A4A4A" />
+                    <RadioButton Content="Images" GroupName="Tools" TextColor="#4A4A4A" />
+                    <RadioButton Content="Rubber" GroupName="Tools" TextColor="#4A4A4A" />
+                    <BoxView HeightRequest="1" BackgroundColor="#E0E0E0" />
+                    <Label 
+                Text="Grubość linii:" 
+                FontSize="16" 
+                TextColor="#333333" 
+                FontAttributes="Bold" 
+                HorizontalOptions="Start" />
+                    <Slider x:Name="ThicknessSlider"
+                    Minimum="1"
+                    Maximum="20"
+                    Value="5"
+                    ThumbColor="#333333"
+                    MinimumTrackColor="#4A90E2"
+                    MaximumTrackColor="#E0E0E0" 
+                    ValueChanged="ThicknessSlider_ValueChanged"/>
+                    <Label x:Name="ThicknessLabel"
+                   Text="Grubość: 5"
+                   FontSize="14"
+                   TextColor="#333333"
+                   HorizontalOptions="End" />
+
+                    <Label 
+                Text="Przezroczystość:" 
+                FontSize="16" 
+                TextColor="#333333" 
+                FontAttributes="Bold" 
+                HorizontalOptions="Start" />
+                    <Slider x:Name="OpacitySlider"
+                    Minimum="0"
+                    Maximum="100"
+                    Value="255"
+                    ThumbColor="#333333"
+                    MinimumTrackColor="#4A90E2"
+                    MaximumTrackColor="#E0E0E0" 
+                            ValueChanged="OpacitySlider_ValueChanged"/>
+                    <Label x:Name="OpacityLabel"
+                   Text="Przezroczystość: 100%"
+                   FontSize="14"
+                   TextColor="#333333"
+                   HorizontalOptions="End" />
+                </StackLayout>
+            </ScrollView>
+        </Frame>
+        <VerticalStackLayout>
+            <Frame
+                x:Name="TextEdit"
+       IsVisible="False"
+       AbsoluteLayout.LayoutFlags="PositionProportional"
+       AbsoluteLayout.LayoutBounds="0.95,0,200,200"
+       BackgroundColor="White"
+       CornerRadius="15"
+       HasShadow="True"
+       Padding="10">
+                <ScrollView>
+                <StackLayout>
+                <Label Text="Dodaj Tekst" FontAttributes="Bold"/>
+                <Entry x:Name="TextEntry" Placeholder="Wpisz tekst..."/>
+                <Label Text="Rozmiar czcionki"/>
+                <Slider x:Name="FontSizeSlider" Minimum="20" Maximum="120" Value="40" ValueChanged="Slider_ValueChanged"/>
+                <Label x:Name="FontSizeLabel" Text="Rozmiar czcionki: "/>
+                <Button Text="Dodaj tekst do płótna" Clicked="Button_Clicked"/>
+                </StackLayout>
+                </ScrollView>
+            </Frame>
+        </VerticalStackLayout>
+        <Frame x:Name="Paint"
+       IsVisible="False"
+       AbsoluteLayout.LayoutFlags="PositionProportional"
+       AbsoluteLayout.LayoutBounds="0.95,0,200,200"
+       BackgroundColor="White"
+       CornerRadius="15"
+       HasShadow="True"
+       Padding="10">
+
+            <controls:ColorPicker
+    x:Name="MainColorPicker"
+    VerticalOptions="Start"
+    HorizontalOptions="Center"
+    PickedColorChanged="PickerColor"
+    PickedColor="{Binding UserPickerColor}"
+    />
+        </Frame>
+        <Frame x:Name="TextEditOptions"
+               IsVisible="False"
+               AbsoluteLayout.LayoutFlags="PositionProportional"
+               AbsoluteLayout.LayoutBounds="0.95,0,200,200"
+               BackgroundColor="White"
+               CornerRadius="15"
+               HasShadow="True"
+               Padding="10">
+            <StackLayout>
+                <Label Text="Text Options"/>
+                <Label Text="Bold"/>
+                <CheckBox/>
+                <Label Text="Italic"/>
+                <CheckBox/>
+                <Label Text="Font Picker"/>
+                <Picker></Picker>
+                <Label Text="Underline"/>
+                <CheckBox/>
+                <Label Text="Strikethrough"/>
+                <CheckBox/>
+            </StackLayout>
+            
+        </Frame>
+    </AbsoluteLayout>
+    
+</ContentPage>
